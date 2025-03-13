@@ -11,14 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('detail_profile', function (Blueprint $table) {
-            $table->string('nama')->default('');
-            $table->string('username');
-            $table->string('email');
+        Schema::create('users', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('name');
+            $table->string('username')->unique(); //TAMBAHKAN KOLOM INI
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->timestamps(); // Ini akan menambahkan created_at & updated_at
-
-            
+            $table->rememberToken();
+            $table->timestamps();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

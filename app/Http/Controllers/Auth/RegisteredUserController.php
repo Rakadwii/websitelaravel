@@ -31,8 +31,8 @@ class RegisteredUserController extends Controller
     {
         // Validasi input dari form registrasi
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255', 'unique:detail_profile'], // Menggunakan tabel detail_profiles
+            'nama' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255', 'unique:detail_profile'], // Menggunakan tabel detail_profile
             'email' => ['required', 'string', 'email', 'max:255', 'unique:detail_profile'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             //'address' => ['required', 'string', 'max:255'], // Tambahkan validasi address
@@ -42,7 +42,7 @@ class RegisteredUserController extends Controller
 
         // Simpan user ke database
         $detail_profile = DetailProfile::create([
-            'name' => $request->name,
+            'nama' => $request->name,
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -57,6 +57,6 @@ class RegisteredUserController extends Controller
         // Login user setelah registrasi
         Auth::login($detail_profile);
 
-        return redirect()->route('dashboard');
+        return redirect()->route('login');
     }
 }

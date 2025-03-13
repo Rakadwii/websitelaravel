@@ -2,28 +2,42 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use App\Models\DetailProfile;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller; // Pastikan ini ada
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 
-class LoginController extends Controller
+class LoginController extends Controller // Pastikan ini mewarisi Controller
 {
-    public function login(Request $request)
+    public function __construct()
     {
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
+        $this->middleware('guest')->except('logout');
+        $this->middleware('auth')->only('logout');
+    }
+
+    public function login(Request $request): RedirectResponse
+    {
+        // Validasi input
+        $request->validate([
+            'username' => 'required|string', 
+            'password' => 'required|string|min:6',
         ]);
 
-        $user = DetailProfile::where('email', $credentials['email'])->first();
+        // Cek apakah input username adalah email atau hanya username
+        $loginType = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
-        if ($user && Hash::check($credentials['password'], $user->password)) {
-            Auth::login($user); // Login menggunakan DetailProfile
-            return redirect()->route('dashboard');
+        // Data untuk proses login
+        $login = [
+            $loginType => $request->username,
+            'password' => $request->password
+        ];
+
+        // Coba lakukan login
+        if (Auth::attempt($login)) { 
+            return redirect()->intended('/home');
         }
 
-        return back()->withErrors(['email' => 'Email atau password salah']);
+        // Jika gagal login, kembali ke halaman login dengan pesan error
+        return back()->withInput()->withErrors(['username' => 'Email/Password salah!']);
     }
 }
