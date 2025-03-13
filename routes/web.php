@@ -14,6 +14,13 @@ use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\CobaController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\ApiPendidikanController;
+use App\Http\Controllers\Auth\LoginController;
+use Illuminate\Support\Facades\Auth;
+
+Auth::routes();
+
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
 
 //Acara 3
 Route::get('/index', function () {
@@ -99,11 +106,12 @@ Route::get('/home', [ManagementUserController::class, 'index']);
 //Acara 7
 Route::resource('/homeacara7', HomeController::class);
 //Acara 8
+
 Route::group(['namespace' => 'App\Http\Controllers'], function () {
     Route::resource('dashboard', DashboardController::class);
     Route::resource('product', ProductController::class);
 });
-Auth::routes();
+// Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
@@ -130,7 +138,8 @@ Route::put('post/{id}', function () {
 })->middleware('role:editor');
 
 Route::group(['namespace' => 'App\Http\Controllers\backend'], function () {
-    Route::resource('dash', DashboardController::class);
+    
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('pengalaman_kerja', PengalamanKerjaController::class);
     Route::resource('pendidikan', PendidikanController::class);
 });
@@ -162,3 +171,5 @@ Route::get('/api/pendidikan/{id}', [ApiPendidikanController::class, 'getPen']);
 Route::post('/api/pendidikan', [ApiPendidikanController::class, 'createPen']);
 Route::put('/api/pendidikan/{id}', [ApiPendidikanController::class, 'updatePen']);
 Route::delete('/api/pendidikan/{id}', [ApiPendidikanController::class, 'deletePen']);
+
+
