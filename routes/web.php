@@ -15,6 +15,7 @@ use App\Http\Controllers\CobaController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\ApiPendidikanController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\backend\DashboardController as BackendDashboardController;
 use Illuminate\Support\Facades\Auth;
 
 Auth::routes();
@@ -107,11 +108,11 @@ Route::get('/home', [ManagementUserController::class, 'index']);
 Route::resource('/homeacara7', HomeController::class);
 //Acara 8
 
-Route::group(['namespace' => 'App\Http\Controllers'], function () {
-    Route::resource('dashboard', DashboardController::class);
-    Route::resource('product', ProductController::class);
-});
-// Auth::routes();
+//Route::group(['namespace' => 'App\Http\Controllers'], function () {
+    Route::get('dashboard', [BackendDashboardController::class, 'index'])->name('dasboard.index');
+   // Route::resource('product', ProductController::class);
+
+Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
@@ -139,7 +140,7 @@ Route::put('post/{id}', function () {
 
 Route::group(['namespace' => 'App\Http\Controllers\backend'], function () {
     
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::resource('dashboard', 'DashboardController');
     Route::resource('pengalaman_kerja', PengalamanKerjaController::class);
     Route::resource('pendidikan', PendidikanController::class);
 });

@@ -1,48 +1,64 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
-
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
+    /**
+     * Redirect setelah login berhasil.
+     */
+    protected $redirectTo = '/dashboard';
+
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
-        $this->middleware('guest')->except('logout'); // Cegah akses login bagi user yang sudah login
-        $this->middleware('auth')->only('logout'); // Pastikan hanya user yang login bisa logout
+        // $this->middleware('guest')->except('logout');
     }
 
-    public function login(Request $request): RedirectResponse
+    /**
+     * Menampilkan halaman login.
+     */
+    public function showLoginForm()
     {
-        $request->validate([
-            'username' => 'required|string', 
-            'password' => 'required|string|min:6',
-        ]);
-
-        // Cek apakah username berupa email atau hanya username
-        $loginType = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
-
-        $login = [
-            $loginType => $request->username,
-            'password' => $request->password
-        ];
-
-        if (Auth::attempt($login)) {
-            $request->session()->regenerate(); // Hindari session hijacking
-            return redirect()->intended('/dashboard'); // Ubah jika ingin ke halaman lain
-        }
-
-        return back()->withInput()->withErrors(['username' => 'Email/Password salah!']);
+        return view('auth.login');
     }
 
-    public function logout(Request $request): RedirectResponse
+    /**
+     * Proses login.
+     */
+    public function login(Request $request)
+{
+    $request->validate([
+        'username' => 'required|string', 
+        'password' => 'required|string|min:6',
+    ]);
+
+    $loginType = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+
+    $login = [
+        $loginType => $request->username,
+        'password' => $request->password
+    ];
+
+    if (Auth::attempt($login)) {
+        return redirect()->intended('/dashboard');
+    }
+
+    return back()->withErrors(['username' => 'Email atau username dan password tidak sesuai.']);
+}
+
+    /**
+     * Logout user.
+     */
+    public function logout(Request $request)
     {
         Auth::logout();
         $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect('/login'); // Pastikan ada rute /login
+        return redirect('/');
     }
 }
