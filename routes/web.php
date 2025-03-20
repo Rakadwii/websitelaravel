@@ -108,9 +108,7 @@ Route::get('/home', [ManagementUserController::class, 'index']);
 Route::resource('/homeacara7', HomeController::class);
 //Acara 8
 
-//Route::group(['namespace' => 'App\Http\Controllers'], function () {
-    Route::get('dashboard', [BackendDashboardController::class, 'index'])->name('dasboard.index');
-   // Route::resource('product', ProductController::class);
+Route::get('dashboard', [BackendDashboardController::class, 'index'])->name('dasboard.index');
 
 Auth::routes();
 
@@ -138,12 +136,15 @@ Route::put('post/{id}', function () {
 
 })->middleware('role:editor');
 
+//Acara 13-16
 Route::group(['namespace' => 'App\Http\Controllers\backend'], function () {
     
     Route::resource('dashboard', 'DashboardController');
     Route::resource('pengalaman_kerja', PengalamanKerjaController::class);
     Route::resource('pendidikan', PendidikanController::class);
 });
+
+//Acara 17
 Route::get('/session/create', [SessionController::class, 'create']);
 Route::get('/session/show', [SessionController::class, 'show']);
 Route::get('/session/delete', [SessionController::class, 'delete']);
@@ -153,8 +154,10 @@ Route::get('/pegawai/{nama}', [PegawaiController::class, 'index']);
 Route::get('/formulir', [PegawaiController::class, 'formulir']);
 Route::post('/formulir/proses', [PegawaiController::class, 'proses']);
 
+//Acara 18
 Route::get('/cobaerror/{nama?}', [CobaController::class, 'index']);
 
+//Acara 19-20
 Route::get('/upload', [UploadController::class, 'upload'])->name('upload');
 
 Route::post('/upload/proses', [UploadController::class, 'proses_upload'])->name('upload.proses');
@@ -166,7 +169,7 @@ Route::post('/dropzone/store', [UploadController::class, 'dropzone_store'])->nam
 Route::get('/pdf_upload', [UploadController::class, 'pdf_upload'])->name('pdf.upload');
 Route::post('/pdf/store', [UploadController::class, 'pdf_store'])->name('pdf.store');
 
-
+//Acara 21-22
 Route::get('/api/pendidikan', [ApiPendidikanController::class, 'getAll']);
 Route::get('/api/pendidikan/{id}', [ApiPendidikanController::class, 'getPen']);
 Route::post('/api/pendidikan', [ApiPendidikanController::class, 'createPen']);
